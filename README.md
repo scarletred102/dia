@@ -31,8 +31,8 @@ A secure, self-sovereign identity management system built with blockchain techno
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/web3-digital-identity.git
-cd web3-digital-identity
+git clone https://github.com/scarletred102/dia.git
+cd dia
 ```
 
 2. Install dependencies:
