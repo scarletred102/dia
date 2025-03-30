@@ -31,6 +31,9 @@ jobs:
     - name: Run tests
       run: npm run test
     
+    - name: Install Snyk CLI
+      run: npm install -g snyk@1.1240.0
+    
     - name: Run security check
       run: npm run security-check || echo "Security check failed but continuing"
       env:
