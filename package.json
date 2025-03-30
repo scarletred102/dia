@@ -17,7 +17,8 @@
     "build:prod": "npm run lint && npm run type-check && npm run security-check && npm run build",
     "deploy": "npm run build:prod && node scripts/deploy.js",
     "gh-pages": "gh-pages -d dist",
-    "electron:build": "electron-builder"
+    "electron:build": "electron-builder",
+    "lint-staged": "lint-staged"
   },
   "dependencies": {
     "buffer": "^6.0.3",
