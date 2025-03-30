@@ -7,15 +7,9 @@ import security from 'eslint-plugin-security';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
 
-export default tseslint.config(
+export default [
   { ignores: ['dist'] },
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.recommended,
-      'plugin:security/recommended',
-      'plugin:jsx-a11y/recommended',
-    ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -84,20 +78,6 @@ export default tseslint.config(
       'import/default': 'error',
       'import/namespace': 'error',
       'import/no-duplicates': 'error',
-      'import/no-self-import': 'error',
-      'import/no-cycle': 'error',
-      'import/no-useless-path-segments': 'error',
-      'import/no-relative-parent-imports': 'error',
-      'import/first': 'error',
-      'import/exports-last': 'error',
-      'import/no-duplicates': 'error',
-      'import/order': ['error', {
-        'groups': ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-        'newlines-between': 'always',
-        'alphabetize': { 'order': 'asc' }
-      }],
-      'import/newline-after-import': 'error',
-      'import/no-anonymous-default-export': 'error',
     },
-  }
-);
+  },
+];

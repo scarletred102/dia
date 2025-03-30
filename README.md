@@ -1,108 +1,60 @@
 # Web3 Digital Identity
 
-A secure, self-sovereign identity management system built with blockchain technology.
+A modern application for managing decentralized digital identities on the blockchain.
 
 ## Features
 
-- Self-sovereign identity management
-- Blockchain-based verification
-- Reputation scoring system
-- Secure wallet integration
-- DID (Decentralized Identifier) support
+- Connect to Web3 wallets (MetaMask, etc.)
+- View and verify decentralized identifiers (DIDs)
+- Manage identity claims and reputation
+- Secure blockchain interactions
 
-## Security Features
+## Technologies
 
-- Content Security Policy (CSP) implementation
-- Security headers configuration
-- Input validation and sanitization
-- Rate limiting
-- Error boundary implementation
-- Secure wallet connection handling
+- React + TypeScript
+- Vite
+- TailwindCSS
+- Ethers.js
+- DID-JWT
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js >= 18.0.0
-- npm >= 9.0.0
-- MetaMask or compatible Web3 wallet
+- Node.js 18+
+- npm or yarn
 
 ### Installation
 
-1. Clone the repository:
 ```bash
-git clone https://github.com/scarletred102/dia.git
-cd dia
-```
+# Clone the repository
+git clone https://github.com/yourusername/web3-digital-identity.git
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Start the development server:
-```bash
+# Start development server
 npm run dev
 ```
 
-4. Build for production:
+### Build
+
 ```bash
+# Build for production
 npm run build
-```
 
-### Development Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run test` - Run tests
-- `npm run test:coverage` - Run tests with coverage
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript type checking
-- `npm run format` - Format code with Prettier
-- `npm run security-check` - Run security checks
-
-## Testing
-
-The project uses Vitest for testing. Run tests with:
-
-```bash
-npm run test
-```
-
-For coverage report:
-```bash
-npm run test:coverage
+# Preview production build
+npm run preview
 ```
 
 ## Security
 
-This project implements several security measures:
-
-- Content Security Policy (CSP)
-- Security headers
-- Input validation
-- Rate limiting
-- Error boundaries
-- Secure wallet connections
-- Regular security audits
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This application implements several security features:
+- Error boundaries for graceful error handling
+- Input sanitization
+- Rate limiting for API calls
+- Secure headers configuration
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [React](https://reactjs.org/)
-- [Vite](https://vitejs.dev/)
-- [Ethers.js](https://docs.ethers.org/)
-- [DID-JWT](https://github.com/decentralized-identity/did-jwt)
-- [DID-Resolver](https://github.com/decentralized-identity/did-resolver) 
+MIT 

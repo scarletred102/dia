@@ -1,14 +1,13 @@
-export interface Identity {
-  did: string;
-  address: string;
-  reputation: number;
-  claims: Claim[];
-  lastUpdated?: number;
+export enum ClaimStatus {
+  VERIFIED = 'VERIFIED',
+  PENDING = 'PENDING',
+  EXPIRED = 'EXPIRED',
+  REVOKED = 'REVOKED'
 }
 
 export interface Claim {
   id: string;
-  type: ClaimType;
+  type: string;
   value: string;
   issuer: string;
   timestamp: number;
@@ -17,19 +16,12 @@ export interface Claim {
   expiresAt?: number;
 }
 
-export enum ClaimType {
-  EMAIL_VERIFICATION = 'EMAIL_VERIFICATION',
-  PHONE_VERIFICATION = 'PHONE_VERIFICATION',
-  KYC_VERIFICATION = 'KYC_VERIFICATION',
-  PROFESSIONAL_CREDENTIAL = 'PROFESSIONAL_CREDENTIAL',
-  EDUCATION_CREDENTIAL = 'EDUCATION_CREDENTIAL',
-}
-
-export enum ClaimStatus {
-  PENDING = 'PENDING',
-  VERIFIED = 'VERIFIED',
-  EXPIRED = 'EXPIRED',
-  REVOKED = 'REVOKED',
+export interface Identity {
+  did: string;
+  address: string;
+  reputation: number;
+  claims: Claim[];
+  lastUpdated: number;
 }
 
 export interface IdentityState {

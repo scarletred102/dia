@@ -1,101 +1,103 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { Identity, IdentityState } from '../types/identity';
-import { blockchainService } from '../services/blockchainService';
+import { useState, useEffect, useCallback } from 'react';
+import { Identity } from '../types/identity';
+import { secureWeb3Service } from '../services/secureWeb3Service';
 
-export const useWeb3Identity = () => {
+interface IdentityState {
+  identity: Identity | null;
+  isConnecting: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function useWeb3Identity() {
   const [state, setState] = useState<IdentityState>({
     identity: null,
     isConnecting: false,
     isLoading: false,
     error: null,
-    lastSync: null,
   });
 
-  const syncTimeoutRef = useRef<number>();
+  const handleAccountsChanged = useCallback(async (accounts: string[]) => {
+    if (accounts.length === 0) {
+      setState(prev => ({ ...prev, identity: null }));
+    } else {
+      try {
+        const identity = await secureWeb3Service.getIdentity(accounts[0]);
+        setState(prev => ({ ...prev, identity }));
+      } catch (error) {
+        setState(prev => ({
+          ...prev,
+          error: error instanceof Error ? error.message : 'Failed to load identity'
+        }));
+      }
+    }
+  }, []);
 
-  const syncIdentity = useCallback(async (address: string) => {
+  useEffect(() => {
+    if (typeof window.ethereum !== 'undefined') {
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', () => window.location.reload());
+    }
+
+    return () => {
+      if (typeof window.ethereum !== 'undefined') {
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+      }
+    };
+  }, [handleAccountsChanged]);
+
+  const connectWallet = async () => {
+    setState(prev => ({ ...prev, isConnecting: true, error: null }));
     try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
-      const identity = await blockchainService.getIdentity(address);
+      const address = await secureWeb3Service.connect();
+      const identity = await secureWeb3Service.getIdentity(address);
+      setState(prev => ({
+        ...prev,
+        identity,
+        isConnecting: false,
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        isConnecting: false,
+        error: error instanceof Error ? error.message : 'Failed to connect wallet'
+      }));
+    }
+  };
+
+  const disconnect = async () => {
+    await secureWeb3Service.disconnect();
+    setState(prev => ({
+      ...prev,
+      identity: null,
+      error: null,
+    }));
+  };
+
+  const syncIdentity = async () => {
+    if (!state.identity) return;
+
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    try {
+      const identity = await secureWeb3Service.getIdentity(state.identity.address);
       setState(prev => ({
         ...prev,
         identity,
         isLoading: false,
-        lastSync: Date.now(),
       }));
     } catch (error) {
       setState(prev => ({
         ...prev,
-        error: 'Failed to sync identity data',
         isLoading: false,
+        error: error instanceof Error ? error.message : 'Failed to sync identity'
       }));
     }
-  }, []);
-
-  const connectWallet = useCallback(async () => {
-    if (!window.ethereum) {
-      setState(prev => ({ ...prev, error: 'Please install MetaMask!' }));
-      return;
-    }
-
-    try {
-      setState(prev => ({ ...prev, isConnecting: true, error: null }));
-      
-      const accounts = await window.ethereum.request({ 
-        method: 'eth_requestAccounts' 
-      });
-      
-      const address = accounts[0];
-      await syncIdentity(address);
-      
-      // Set up periodic sync
-      syncTimeoutRef.current = window.setInterval(() => {
-        syncIdentity(address);
-      }, 30000); // Sync every 30 seconds
-
-    } catch (error) {
-      setState(prev => ({ 
-        ...prev, 
-        error: 'Failed to connect wallet',
-        isConnecting: false 
-      }));
-    }
-  }, [syncIdentity]);
-
-  const disconnect = useCallback(() => {
-    if (syncTimeoutRef.current) {
-      clearInterval(syncTimeoutRef.current);
-    }
-    setState({
-      identity: null,
-      isConnecting: false,
-      isLoading: false,
-      error: null,
-      lastSync: null,
-    });
-  }, []);
-
-  useEffect(() => {
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', disconnect);
-      window.ethereum.on('chainChanged', disconnect);
-    }
-
-    return () => {
-      if (syncTimeoutRef.current) {
-        clearInterval(syncTimeoutRef.current);
-      }
-      if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', disconnect);
-        window.ethereum.removeListener('chainChanged', disconnect);
-      }
-    };
-  }, [disconnect]);
+  };
 
   return {
     ...state,
     connectWallet,
     disconnect,
-    syncIdentity: state.identity ? () => syncIdentity(state.identity.address) : null,
+    syncIdentity,
   };
-};
+}
